@@ -1,0 +1,44 @@
+version: '3'
+services:
+  app:
+    container_name: homePlatform
+    build: .
+    restart: unless-stopped
+    ports:
+      - "9000"
+    volumes:
+      - .:/var/www/app
+    links:
+      - db
+    networks:
+      - home
+  web:
+    container_name: homePlatformServer
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+    - "8081:8080"
+    volumes:
+    - .:/var/www/app
+    - ./docker/log:/var/log/nginx
+    - ./docker/conf.d:/etc/nginx/conf.d
+    links:
+      - app
+      - db
+    networks:
+      - home
+  db:
+    image: "mariadb:10.6"
+    container_name: homePlatformDb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "1"
+      MYSQL_DATABASE: "home_platform"
+    ports:
+    - "3308:3306"
+    networks:
+      - home
+networks:
+  home:
+    external: true
+
