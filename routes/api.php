@@ -21,4 +21,8 @@ Route::middleware(['auth:api'])->group(static function () {
     Route::group(['prefix' => 'user'], static function () {
         Route::get('/info', [\App\Http\Controllers\ApiUserController::class, 'userInfo']);
     });
+    Route::group(['prefix' => 'post'], static function () {
+        Route::post('/create', [\App\Http\Controllers\PostController::class, 'createPost']);
+        Route::get('/list', [\App\Http\Controllers\PostController::class, 'listPost']);
+    });
 });
