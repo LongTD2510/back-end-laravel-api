@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ApiLoginRequest;
 use App\Http\Requests\ApiRegisterRequest;
 use App\Repositories\Auth\AuthInterface;
 use App\Repositories\User\UserInterface;
@@ -37,7 +38,7 @@ class ApiUserController extends Controller
         return $this->successResponse($data);
     }
 
-    public function login(Request $request): \Illuminate\Http\JsonResponse
+    public function login(ApiLoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $credentials = request(['email', 'password']);
         if (!Auth::attempt($credentials)) {
@@ -59,4 +60,5 @@ class ApiUserController extends Controller
     {
         return $this->successResponse($request->user('api'));
     }
+
 }

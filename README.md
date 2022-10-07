@@ -2,11 +2,6 @@
 - Install Docker Windows (WSL2)
 - Install Docker Linux
 
-## Clone project
-- `git clone git@github.com:sotatek-dev/bgs_api.git`
-- `cd bgs_api`
-
-
 ## Install project
 - `docker-compose build`
 - `docker-compose up -d`
@@ -18,5 +13,10 @@
 - `chmod -R 775 storage`
 - `php artisan migrate`
 - `php artisan passport:install`
+## Make repository
+- `php artisan make:repository your-repository-name`
 
+## Example:
+- `php artisan make:repository UserRepository`
+- `php artisan make:repository Backend\UserRepository`
 
