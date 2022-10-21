@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Post;
 
+use App\Consts;
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 
@@ -13,6 +15,7 @@ use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
  */
 class PostRepository extends BaseRepository implements PostInterface
 {
+
     /**
      * @return string
      *  Return the model
@@ -31,6 +34,7 @@ class PostRepository extends BaseRepository implements PostInterface
         return DB::transaction(static function () use ($request) {
             $post = new Post();
             $post->fill($request->all());
+            $post->end_at = Carbon::now()->addDay(Consts::ADD_30_DAY);
             $post->save();
             $post->refresh();
 
@@ -40,12 +44,19 @@ class PostRepository extends BaseRepository implements PostInterface
     }
 
     /**
-     * @param $id
+     * @param $request
+     * @param $post
      * @return mixed
      */
-    public function update($id)
+    public function update($request, $post)
     {
-        // TODO: Implement update() method.
+        return DB::transaction(static function () use ($request, $post) {
+            $post->title = $request->title;
+            $post->content = $request->content;
+            $post->save();
+            $post->refresh();
+            return $post;
+        }, 5);
     }
 
     /**
@@ -55,6 +66,9 @@ class PostRepository extends BaseRepository implements PostInterface
     public function deletePost($id)
     {
         // TODO: Implement deletePost() method.
+        return DB::transaction(static function () use ($id) {
+            return Post::where('id', $id)->delete();
+        }, 5);
     }
 
     /**
@@ -62,6 +76,16 @@ class PostRepository extends BaseRepository implements PostInterface
      */
     public function list()
     {
-        return Post::latest()->paginate(2);
+        return Post::latest()->where('end_at', '>', Carbon::now())->paginate(4);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getPostById($id)
+    {
+        return Post::where('id', $id)
+            ->orderByDesc('id')->first();
     }
 }

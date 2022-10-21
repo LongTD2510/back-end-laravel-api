@@ -47,13 +47,13 @@ class ApiUserController extends Controller
         $token = $this->authRepository->createToken($credentials);
         $data = $this->authRepository->returnWithToken(Auth::user(), $token);
 
-        return $this->successResponse($data);
+        return $this->successResponse($data, 'Successfully login');
     }
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         $logout = $request->user()->token()->revoke();
-        return $this->successResponse($logout);
+        return $this->successResponse($logout, 'Successfully logged out');
     }
 
     public function userInfo(Request $request): \Illuminate\Http\JsonResponse
