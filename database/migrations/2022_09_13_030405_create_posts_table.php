@@ -17,6 +17,9 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->unsignedInteger('user_id');
+            $table->dateTime('end_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,4 +33,4 @@ class CreatePostsTable extends Migration
     {
         Schema::dropIfExists('posts');
     }
-}
+    }

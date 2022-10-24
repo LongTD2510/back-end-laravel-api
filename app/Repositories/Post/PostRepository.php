@@ -52,6 +52,7 @@ class PostRepository extends BaseRepository implements PostInterface
     {
         return DB::transaction(static function () use ($request, $post) {
             $post->title = $request->title;
+            $post->user_id = $request->user_id;
             $post->content = $request->content;
             $post->save();
             $post->refresh();
@@ -76,7 +77,9 @@ class PostRepository extends BaseRepository implements PostInterface
      */
     public function list()
     {
-        return Post::latest()->where('end_at', '>', Carbon::now())->paginate(4);
+        return Post::latest()
+            ->with('createdBy')->where('end_at', '>', Carbon::now())
+            ->paginate(4);
     }
 
     /**
@@ -85,7 +88,7 @@ class PostRepository extends BaseRepository implements PostInterface
      */
     public function getPostById($id)
     {
-        return Post::where('id', $id)
+        return Post::with('createdBy')->where('id', $id)
             ->orderByDesc('id')->first();
     }
 }

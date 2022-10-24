@@ -26,7 +26,8 @@ class ApiPostRequest extends FormRequest
         return [
             //
             'title' => 'required|min:6|max:500',
-            'content' => 'required'
+            'content' => 'required',
+            'user_id' => 'required'
         ];
     }
 }
