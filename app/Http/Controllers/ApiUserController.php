@@ -56,6 +56,13 @@ class ApiUserController extends Controller
         return $this->successResponse($logout, 'Successfully logged out');
     }
 
+    public function refreshToken(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $this->authRepository->refreshToken($request);
+        
+        return $this->successResponse($data, 'Refresh token is expiry');
+    }
+
     public function userInfo(Request $request): \Illuminate\Http\JsonResponse
     {
         return $this->successResponse($request->user('api'));

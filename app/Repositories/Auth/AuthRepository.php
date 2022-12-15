@@ -54,6 +54,28 @@ class AuthRepository extends BaseRepository implements AuthInterface
     public function refreshToken($request)
     {
         // TODO: Implement refreshToken() method.
+        return DB::transaction(function() use($request){
+            $client = DB::table('oauth_clients')
+                ->where('password_client', true)
+                ->first();
+
+            $data = [
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $request->refresh_token,
+                'client_id' => $client->id,
+                'client_secret' => $client->secret,
+                'scope' => ''
+            ];
+            $request = Request::create('/oauth/token', 'POST', $data);
+            $content = json_decode(app()->handle($request)->getContent());
+
+            return $res = ([
+                'token' => $content->access_token,
+                'refresh_token' => $content->refresh_token,
+                'expires_at' => $content->expires_in,
+                'type' => 'Bearer'
+            ]);
+        },5);
     }
 
     /**

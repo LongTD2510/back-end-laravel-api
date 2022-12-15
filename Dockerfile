@@ -13,5 +13,13 @@ RUN apt-get update &&\
     # ln -s ../mods-available/rewrite.load ./ &&\
     mkdir /var/www/app
 
+COPY docker/supervisor.conf /etc/supervisord.conf
+COPY docker/supervisor.d /etc/supervisor.d
+
 WORKDIR /var/www/app
+
+
+ENTRYPOINT ["sh", "/var/www/app/docker/docker-entrypoint.sh"]
+
+CMD supervisord -n -c /etc/supervisord.conf
 

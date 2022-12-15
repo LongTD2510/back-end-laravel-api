@@ -11,8 +11,8 @@ use Illuminate\Validation\ValidationException;
 
 class ErrorResponse
 {
-    public  $httpCode;
-    protected $exception;
+    public int $httpCode;
+    protected Exception $exception;
 
     public function __construct(Exception $exception)
     {

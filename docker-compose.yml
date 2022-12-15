@@ -1,44 +1,65 @@
 version: '3'
 services:
-  app:
-    container_name: homePlatform
-    build: .
-    restart: unless-stopped
-    ports:
-      - "9000"
-    volumes:
-      - .:/var/www/app
-    links:
-      - db
-    networks:
-      - home
-  web:
-    container_name: homePlatformServer
-    image: nginx:latest
-    restart: unless-stopped
-    ports:
-    - "8081:8080"
-    volumes:
-    - .:/var/www/app
-    - ./docker/log:/var/log/nginx
-    - ./docker/conf.d:/etc/nginx/conf.d
-    links:
-      - app
-      - db
-    networks:
-      - home
-  db:
-    image: "mariadb:10.6"
-    container_name: homePlatformDb
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: "1"
-      MYSQL_DATABASE: "home_platform"
-    ports:
-    - "3308:3306"
-    networks:
-      - home
+    app:
+        container_name: homePlatform
+        build: .
+        restart: unless-stopped
+        ports:
+            - "9000"
+        volumes:
+            - .:/var/www/app
+        links:
+            - redis
+            - db
+            - laravel_echo_server
+        networks:
+            - home
+    web:
+        container_name: homePlatformServer
+        image: nginx:latest
+        restart: unless-stopped
+        ports:
+            - "8081:8080"
+        volumes:
+            - .:/var/www/app
+            - ./docker/log:/var/log/nginx
+            - ./docker/conf.d:/etc/nginx/conf.d
+        links:
+            - app
+            - db
+            - redis
+        networks:
+            - home
+    db:
+        image: "mariadb:10.6"
+        container_name: homePlatformDb
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: "1"
+            MYSQL_DATABASE: "home_platform"
+        ports:
+            - "3308:3306"
+        networks:
+            - home
+    laravel_echo_server:
+        container_name: homeEchoServer
+        build:
+            context: docker/laravel-echo-server
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        volumes:
+            - .env:/app/.env
+        networks:
+            - home
+    redis:
+        image: "redis:alpine"
+        container_name: homePlatformRedis
+        restart: unless-stopped
+        ports:
+            - "6786:6379"
+        networks:
+            - home
 networks:
-  home:
-    external: true
+    home:
+        external: true
 

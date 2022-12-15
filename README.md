@@ -18,5 +18,5 @@
 
 ## Example:
 - `php artisan make:repository UserRepository`
-- `php artisan make:repository Backend\UserRepository`
+- `php artisan make:repository Backend/UserRepository`
 

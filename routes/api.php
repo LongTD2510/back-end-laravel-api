@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [\App\Http\Controllers\ApiUserController::class, 'register']);
 Route::post('/login', [\App\Http\Controllers\ApiUserController::class, 'login']);
 Route::get('/list', [\App\Http\Controllers\PostController::class, 'listPost']);
+Route::post('/refesh-token', [\App\Http\Controllers\ApiUserController::class, 'refreshToken']);
 
 Route::middleware(['auth:api'])->group(static function () {
     Route::get('/logout', [\App\Http\Controllers\ApiUserController::class, 'logout']);
@@ -27,5 +28,14 @@ Route::middleware(['auth:api'])->group(static function () {
         Route::post('edit/{id}', [\App\Http\Controllers\PostController::class, 'updatePost']);
         Route::post('delete/{id}', [\App\Http\Controllers\PostController::class, 'deletePost']);
 //        Route::get('/list', [\App\Http\Controllers\PostController::class, 'listPost']);
+    });
+    Route::group(['prefix' => 'real-time'], static function () {
+        Route::get('/list', [\App\Http\Controllers\MessageController::class, 'messages']);
+        Route::post('/add-messages', [\App\Http\Controllers\MessageController::class, 'addMessages']);
+        Route::group(['prefix' => 'room'], static function () {
+            Route::post('/create', [\App\Http\Controllers\RoomController::class, 'createRoomChat']);
+            Route::get('/list', [\App\Http\Controllers\RoomController::class, 'listRoomChat']);
+            Route::get('/filterRoom', [\App\Http\Controllers\RoomController::class, 'filterRoomChat']);
+        });
     });
 });
